@@ -1,0 +1,115 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+public class PhoneBook {
+    private ArrayList<Person> persons; // список абонентов
+
+    public PhoneBook() {
+        persons = new ArrayList<>(); // инициализация списка абонентов
+    }
+
+    public void addPerson(Person person) {
+        persons.add(person); // добавление абонента в список
+        Collections.sort(persons, new Comparator<Person>() { // сортировка списка абонентов
+            @Override
+            public int compare(Person p1, Person p2) {
+                int result = p1.getLastName().compareTo(p2.getLastName()); // сравнение по фамилии
+                if (result == 0) {
+                    result = p1.getFirstName().compareTo(p2.getFirstName()); // сравнение по имени
+                }
+                if (result == 0) {
+                    result = p1.getPhoneNumbers().get(0).compareTo(p2.getPhoneNumbers().get(0)); // сравнение по первому номеру телефона
+                }
+                return result;
+            }
+        });
+    }
+
+    public void removePerson(Person person) {
+        persons.remove(person); // удаление абонента из списка
+    }
+
+    public void editPerson(Person oldPerson, Person newPerson) {
+        int index = persons.indexOf(oldPerson); // поиск индекса старого абонента
+        if (index != -1) {
+            persons.set(index, newPerson); // замена старого абонента новым
+        }
+    }
+
+    public Person findPersonByPhoneNumber(String phoneNumber) {
+        for (Person person : persons) { // перебор всех абонентов
+            for (PhoneNumber number : person.getPhoneNumbers()) { // перебор всех номеров телефона абонента
+                if (number.getNumber().equals(phoneNumber)) { // сравнение номера телефона с искомым номером
+                    return person; // возврат абонента, если номер телефона совпал
+                }
+            }
+        }
+        return null; // возврат null, если абонента не найдено
+    }
+
+    public Person findPersonByLastName(String lastName) {
+        for (Person person : persons) { // перебор всех абонентов
+            if (person.getLastName().equals(lastName)) { // сравнение фамилии абонента с искомой фамилией
+                return person; // возврат абонента, если фамилия совпала
+            }
+        }
+        return null; // возврат null, если абонента не найдено
+    }
+
+    public void printAllPersons() {
+        for (Person person : persons) { // перебор всех абонентов
+            System.out.println(person); // вывод информации о абоненте
+        }
+    }
+}
+
+class Person {
+    private String firstName; // имя абонента
+    private String lastName; // фамилия абонента
+    private ArrayList<PhoneNumber> phoneNumbers; // список номеров телефона абонента
+
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName; // инициализация имени абонента
+        this.lastName = lastName; // инициализация фамилии абонента
+        phoneNumbers = new ArrayList<>(); // инициализация списка номеров телефона
+    }
+
+    public void addPhoneNumber(PhoneNumber phoneNumber) {
+        phoneNumbers.add(phoneNumber); // добавление номера телефона в список
+    }
+
+    public String getFirstName() {
+        return firstName; // получение имени абонента
+    }
+
+    public String getLastName() {
+        return lastName; // получение фамилии абонента
+    }
+
+    public ArrayList<PhoneNumber> getPhoneNumbers() {
+        return phoneNumbers; // получение списка номеров телефона абонента
+    }
+
+    @Override
+    public String toString() {
+        return firstName + " " + lastName + ": " + phoneNumbers; // переопределение метода toString для вывода информации о абоненте
+    }
+}
+
+class PhoneNumber {
+    private String number; // номер телефона
+
+    public PhoneNumber(String number) {
+        this.number = number; // инициализация номера телефона
+    }
+
+    public String getNumber() {
+        return number; // получение номера телефона
+    }
+
+    @Override
+    public String toString() {
+        return number; // переопределение метода toString для вывода номера телефона
+    }
+}
